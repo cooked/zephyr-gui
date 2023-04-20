@@ -3,53 +3,23 @@
 
 / {
     chosen {
-        zephyr-display = &ssd16xx;
+        zephyr-display = &ssd1306_0;
     };
 
 };
 
-&spi2 {
-
-	cs-gpios = <&gpiob 12 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-
-    ssd16xx: ssd16xxfb@0 {
-		compatible = "solomon,ssd16xxfb";
-		spi-max-frequency = <4000000>;
-		reg = <0>;
-		width = <296>;
-		height = <128>;
-		pp-width-bits = <1>; // was 8
-		pp-height-bits = <8>;
-		reset-gpios = <&gpioc 8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-		dc-gpios = <&gpioc 9 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-		busy-gpios = <&gpioc 6 GPIO_ACTIVE_HIGH>;
-		//gdv = [10 0a];
-		//sdv = [19];
-
-		// TODO: do not override, 0xa8 is not a valid value for ssd16xx
-		// see https://v4.cecdn.yun300.cn/100001_1909185148/SSD1680.pdf
-		// p.28
-		//vcom = <0xa8>;
-
-		// TODO: this changes the color of border (was <0x71>)
-		// see command 0x3C
-		//border-waveform = <0x0>;
-
-		// no cmd 0x3A, 0x3B on drivers ssd1680 and ssd1681
-		//dummy-line = <0x1a>;
-		//gate-line-width = <0x08>;
-
-		/*lut-initial = [
-			22 55 AA 55 AA 55 AA 11
-			00 00 00 00 00 00 00 00
-			1E 1E 1E 1E 1E 1E 1E 1E
-			01 00 00 00 00
-		];*/
-		/*lut-default = [
-			18 00 00 00 00 00 00 00
-			00 00 00 00 00 00 00 00
-			0F 01 00 00 00 00 00 00
-			00 00 00 00 00
-		];*/
-	};
+&i2c1 {
+	ssd1306_0:ssd1306@3c {
+        compatible = "solomon,ssd1306fb";
+        reg = <0x3c>;
+        width = <64>;
+        height = <128>;
+        multiplex-ratio = <63>; // -1 than above
+        segment-offset = <0>;
+        page-offset = <0>;
+        display-offset = <0>;
+        prechargep = <0x22>;
+        //segment-remap;
+        //com-invdir;
+    };
 };
